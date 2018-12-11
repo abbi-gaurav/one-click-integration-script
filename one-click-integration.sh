@@ -280,6 +280,12 @@ echo ""
 echo -e "${GREEN}Creating pem file${NC}"
 cat generated.key generated.crt > generated.pem
 
+echo -e "${GREEN}Creating PKCS#12"
+openssl pkcs12 -export -name generated -in generated.pem -out generated.p12 -password pass:kyma-project
+
+echo -e "${GREEN}Import to JKS"
+keytool -importkeystore -destkeystore generated.jks -srckeystore generated.p12 -srcstoretype pkcs12 -alias generated  -srcstorepass kyma-project -storepass kyma-project
+
 echo ""
 echo "Cleaning up..."
 $( rm generated.csr )
